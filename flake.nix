@@ -205,6 +205,22 @@
         installCheckPhase = "make installcheck -j$NIX_BUILD_CORES -l$NIX_BUILD_CORES";
       };
 
+      sourceTarball = pkgs: pkgs.releaseTools.sourceTarball {
+        name = "nix-zilched";
+        inherit version;
+        src = ./.;
+        versionSuffix = "-${versionSuffix}-zilched";
+        buildInputs = with (commonDeps pkgs); nativeBuildDeps ++ buildDeps ++ propagatedDeps;
+        postUnpack = ''
+          (cd $sourceRoot && find . -type f) | cut -c3- > $sourceRoot/.dist-files
+        '';
+        distPhase = ''
+            make dist
+            mkdir -p $out/tarballs
+            cp *.tar.* $out/tarballs
+        '';
+      };
+
       binaryTarball = buildPackages: nix: pkgs: let
         inherit (pkgs) cacert;
         installerClosureInfo = buildPackages.closureInfo { rootPaths = [ nix cacert ]; };
@@ -403,6 +419,9 @@
         buildCross = nixpkgs.lib.genAttrs crossSystems (crossSystem:
           nixpkgs.lib.genAttrs ["x86_64-linux"] (system: self.packages.${system}."nix-${crossSystem}"));
 
+        # Source tarball
+        sourceTarball = sourceTarball nixpkgsFor.x86_64-linux;
+
         # Perl bindings for various platforms.
         perlBindings = nixpkgs.lib.genAttrs systems (system: self.packages.${system}.nix.perl-bindings);
 
@@ -544,6 +563,7 @@
       };
 
       checks = forAllSystems (system: {
+        sourceTarball = self.hydraJobs.sourceTarball;
         binaryTarball = self.hydraJobs.binaryTarball.${system};
         perlBindings = self.hydraJobs.perlBindings.${system};
         installTests = self.hydraJobs.installTests.${system};
