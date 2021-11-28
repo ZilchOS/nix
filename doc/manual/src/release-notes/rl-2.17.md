@@ -27,3 +27,5 @@
   This has been around for a long time and is therefore supported for backwards compatibility, but should not be relied upon.
 
 * Tarball flakes can now redirect to an "immutable" URL that will be recorded in lock files. This allows the use of "mutable" tarball URLs like `https://example.org/hello/latest.tar.gz` in flakes. See the [tarball fetcher](../protocols/tarball-fetcher.md) for details.
+
+* (nix-zilched) OpenSSL dependency has been dropped in favour of libsodium.

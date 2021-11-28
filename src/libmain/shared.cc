@@ -20,8 +20,7 @@
 #include <features.h>
 #endif
 
-#include <openssl/crypto.h>
-
+#include <sodium.h>
 
 namespace nix {
 
