@@ -8,3 +8,5 @@
 
 * New built-in function: `builtins.groupBy`, with the same functionality as
   Nixpkgs' `lib.groupBy`, but faster.
+
+* OpenSSL dependency has been dropped in favour of libsodium.
