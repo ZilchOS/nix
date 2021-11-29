@@ -2,9 +2,7 @@ makefiles = \
   mk/precompiled-headers.mk \
   local.mk \
   src/libutil/local.mk \
-  src/libutil/tests/local.mk \
   src/libstore/local.mk \
-  src/libstore/tests/local.mk \
   src/libfetchers/local.mk \
   src/libmain/local.mk \
   src/libexpr/local.mk \
@@ -22,6 +20,11 @@ makefiles = \
   tests/local.mk \
   tests/plugins/local.mk \
   mk/dist.mk
+
+ifeq ($(HAVE_GTEST), 1)
+  makefiles += src/libutil/tests/local.mk
+  makefiles += src/libstore/tests/local.mk
+endif
 
 -include Makefile.config
 
