@@ -292,10 +292,16 @@ fi
 if test "$tests" = yes; then
 
 # Look for gtest.
-PKG_CHECK_MODULES([GTEST], [gtest_main])
+AC_ARG_ENABLE(gtest, AS_HELP_STRING([--enable-gtest],[enable tests requiring gtest [default=yes]]),
+  gc=$enableval, gc=yes)
+if test "$gtest" = yes; then
+  PKG_CHECK_MODULES([GTEST], [gtest_main])
+  AC_DEFINE(HAVE_GTEST, 1, [Whether to not skip tests requiring gtest.])
+fi
 
 
 # Look for rapidcheck.
+if test "$gtest" = yes; then
 AC_ARG_VAR([RAPIDCHECK_HEADERS], [include path of gtest headers shipped by RAPIDCHECK])
 # No pkg-config yet, https://github.com/emil-e/rapidcheck/issues/302
 AC_LANG_PUSH(C++)
@@ -315,6 +321,7 @@ AC_LINK_IFELSE([
   [],
   [AC_MSG_ERROR([librapidcheck is not found.])])
 AC_LANG_POP(C++)
+fi
 
 fi
 

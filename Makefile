@@ -23,10 +23,13 @@ makefiles = \
 -include Makefile.config
 
 ifeq ($(tests), yes)
+ifeq ($(HAVE_GTEST), 1)
 makefiles += \
   src/libutil/tests/local.mk \
   src/libstore/tests/local.mk \
-  src/libexpr/tests/local.mk \
+  src/libexpr/tests/local.mk
+endif
+makefiles += \
   tests/local.mk \
   tests/ca/local.mk \
   tests/dyn-drv/local.mk \
