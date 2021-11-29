@@ -1,4 +1,9 @@
-# Nix
+# This is a fork
+
+This is a fork of Nix aimed at making it easier to bootstrap.
+Original README follows.
+
+## Nix
 
 [![Open Collective supporters](https://opencollective.com/nixos/tiers/supporter/badge.svg?label=Supporters&color=brightgreen)](https://opencollective.com/nixos)
 [![Test](https://github.com/NixOS/nix/workflows/Test/badge.svg)](https://github.com/NixOS/nix/actions)
