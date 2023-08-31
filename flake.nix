@@ -230,7 +230,24 @@
         installCheckPhase = "make installcheck -j$NIX_BUILD_CORES -l$NIX_BUILD_CORES";
       };
 
-      binaryTarball = nix: pkgs:
+      sourceTarball = pkgs: pkgs.releaseTools.sourceTarball {
+        name = "nix";
+        inherit version;
+        src = ./.;
+        versionSuffix = if versionSuffix != "" then "-${versionSuffix}-zilched" else "-zilched";
+        buildInputs = with (commonDeps { inherit pkgs; }); nativeBuildDeps ++ buildDeps ++ propagatedDeps ++ checkDeps;
+        configureFlags = with (commonDeps { inherit pkgs; }); testConfigureFlags;  # otherwise configure fails
+        postUnpack = ''
+          (cd $sourceRoot && find . -type f) | cut -c3- > $sourceRoot/.dist-files
+        '';
+        distPhase = ''
+            make dist
+            mkdir -p $out/tarballs
+            cp *.tar.* $out/tarballs
+        '';
+      };
+
+      binaryTarball = buildPackages: nix: pkgs:
         let
           inherit (pkgs) buildPackages;
           inherit (pkgs) cacert;
@@ -499,6 +516,9 @@
 
         # Perl bindings for various platforms.
         perlBindings = forAllSystems (system: nixpkgsFor.${system}.native.nix.perl-bindings);
+
+        # Source tarball.
+        sourceTarball = sourceTarball nixpkgsFor.x86_64-linux.native;
 
         # Binary tarball for various platforms, containing a Nix store
         # with the closure of 'nix' package, and the second half of

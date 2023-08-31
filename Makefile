@@ -17,7 +17,8 @@ makefiles = \
   misc/launchd/local.mk \
   misc/upstart/local.mk \
   doc/manual/local.mk \
-  doc/internal-api/local.mk
+  doc/internal-api/local.mk \
+  mk/dist.mk
 
 -include Makefile.config
 
