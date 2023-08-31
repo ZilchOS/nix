@@ -480,7 +480,15 @@ void LocalDerivationGoal::startBuilder()
 
     /* Create a temporary directory where the build will take
        place. */
-    tmpDir = createTempDir("", "nix-build-" + std::string(drvPath.name()), false, false, 0700);
+    char * force_path = getenv("NIX_FORCE_BUILD_PATH");
+    if (!force_path) {
+        tmpDir = createTempDir("", "nix-build-" + std::string(drvPath.name()), false, false, 0700);
+    } else {
+        if (mkdir(force_path, 0700) != 0) {
+            throw SysError("creating directory '%1%'", std::string(force_path));
+        }
+        tmpDir = std::string(force_path);
+    }
 
     chownToBuilder(tmpDir);
 
